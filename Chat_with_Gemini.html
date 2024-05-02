@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Interface</title>
+    <style>
+	.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.chat-box {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    height: 200px;
+    overflow-y: scroll;
+}
+
+.user-input {
+    display: flex;
+}
+
+#user-message {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+#send-button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+	</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bot Interface</h1>
+        <div class="chat-box">
+            <p id="bot-response"></p>
+        </div>
+        <div class="user-input">
+            <input type="text" id="user-message" placeholder="Type your message">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+    <script>
+	const botResponse = document.getElementById('bot-response');
+const userMessage = document.getElementById('user-message');
+const sendButton = document.getElementById('send-button');
+
+const url = 'https://us-central1-vegan-website-421304.cloudfunctions.net/expense_analysis_gemini';
+
+sendButton.addEventListener('click', () => {
+  const userInput = userMessage.value;
+  userMessage.value = '';
+
+  const queryBody = {
+    "user_input": userInput
+  };
+
+  fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(queryBody)
+  })
+  .then(response => response.json())
+  .then(data => {
+    botResponse.innerText = data.response;
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    botResponse.innerText = 'Something went wrong. Please try again later.';
+  });
+});
+	</script>
+</body>
+</html>
